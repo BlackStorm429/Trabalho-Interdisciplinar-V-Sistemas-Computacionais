@@ -1,13 +1,13 @@
-import { config } from '@/config/environment';
 import React from 'react';
 import { View, Button, TextInput, Text, Alert, StyleSheet } from 'react-native';
+import { ENV } from '@/config/environment';
 
 const LockControlScreen: React.FC = () => {
   const [doorPassword, setDoorPassword] = React.useState('');
 
   const lockDoor = async () => {
     try {
-      const response = await fetch(config.apiUrl + '/lock', {
+      const response = await fetch(ENV.API_URL + '/lock', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -25,7 +25,7 @@ const LockControlScreen: React.FC = () => {
 
   const unlockDoor = async () => {
     try {
-      const response = await fetch(config.apiUrl + '/unlock', {
+      const response = await fetch(ENV.API_URL + '/unlock', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

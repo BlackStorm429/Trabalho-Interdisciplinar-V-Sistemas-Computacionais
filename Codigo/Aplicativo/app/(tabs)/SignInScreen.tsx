@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import axios from 'axios'; // Adicione esta importação
-import { config } from '@/config/environment';
+import { ENV } from '@/config/environment';
 
 type SignInScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignInScreen'>;
 
@@ -15,7 +15,7 @@ export default function SignInScreen() {
 
   const handleSignIn = async () => {
     try {
-      const response = await axios.post(config.apiUrl + '/login', {
+      const response = await axios.post(ENV.API_URL + '/login', {
         email,
         password,
       });

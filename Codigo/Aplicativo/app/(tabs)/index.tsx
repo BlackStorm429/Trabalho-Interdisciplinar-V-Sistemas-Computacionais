@@ -3,7 +3,7 @@ import { View, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingV
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
-import { config } from '@/config/environment';
+import { ENV } from '@/config/environment';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
 
@@ -17,7 +17,7 @@ export default function index() {
   // Função handleLock modificada
   const handleLock = async () => {
     try {
-      const response = await fetch(config.apiUrl + (doorOpened ? '/lock' : '/unlock'), {
+      const response = await fetch(ENV.API_URL + (doorOpened ? '/lock' : '/unlock'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

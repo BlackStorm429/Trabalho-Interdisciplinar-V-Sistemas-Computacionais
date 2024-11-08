@@ -6,7 +6,7 @@ import { RootStackParamList } from '../types';
 import axios from 'axios';
 import { TextInputCustom } from '@/components/TextInputCustom';
 import { PasswordInputCustom } from '@/components/PasswordInputCustom';
-import { config } from '@/config/environment';
+import { ENV } from '@/config/environment';
 
 type SignUpScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignUpScreen'>;
 
@@ -55,9 +55,9 @@ export default function SignUpScreen() {
     // Cadastro do usuário no backend
     try {
       console.log(`Dados: ${name}, ${email}, ${password}, ${confirmPassword}, ${doorPassword}`);
-      console.log(config.apiUrl);
+      console.log(ENV.API_URL);
       
-      const response = await axios.post(config.apiUrl + '/cadastrar', {
+      const response = await axios.post(ENV.API_URL + '/cadastrar', {
         name,
         email,
         password,

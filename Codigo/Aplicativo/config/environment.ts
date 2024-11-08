@@ -1,5 +1,4 @@
-import { API_URL } from '@env';
-
-export const config = {
-  apiUrl: API_URL,
+export const ENV = {
+    API_URL: 'http://your_api_url:3000',
 };
+  
