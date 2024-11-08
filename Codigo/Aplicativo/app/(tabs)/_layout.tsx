@@ -30,20 +30,6 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="LockedScreen"
-        options={{
-          title: 'Locked',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon 
-              name={focused ? 'locked' : 'locked'} 
-              color={color} 
-              family="Fontisto"
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
         name="AboutScreen"
         options={{
           title: 'About',

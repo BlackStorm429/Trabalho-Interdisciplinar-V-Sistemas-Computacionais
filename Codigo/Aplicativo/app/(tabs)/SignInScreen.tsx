@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import axios from 'axios'; // Adicione esta importação
+import { config } from '@/config/environment';
 
 type SignInScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignInScreen'>;
 
@@ -14,12 +15,14 @@ export default function SignInScreen() {
 
   const handleSignIn = async () => {
     try {
-      const response = await axios.post('http://10.254.128.157:3000/login', {
+      const response = await axios.post(config.apiUrl + '/login', {
         email,
         password,
       });
+      
       console.log('Usuário logado com sucesso:', response.data);
-      navigation.navigate('index'); // Navegar para a tela principal após o login
+      navigation.navigate('index');
+
     } catch (error) {
       console.error('Erro ao logar o usuário:', error);
       alert('Erro ao logar, verifique suas credenciais.');
@@ -35,7 +38,7 @@ export default function SignInScreen() {
       <TouchableOpacity style={styles.loginButton} onPress={handleSignIn}>
         <Text style={styles.loginText}>Entrar</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log('Esqueci minha senha pressionado')}>
+      <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
         <Text style={styles.forgotPasswordText}>Esqueci minha senha</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>

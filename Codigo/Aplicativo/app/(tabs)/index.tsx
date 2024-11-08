@@ -3,32 +3,42 @@ import { View, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingV
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
-import axios from 'axios';
+import { config } from '@/config/environment';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
 
 export default function index() {
   const navigation = useNavigation<NavigationProp>();
-  const [password, setPassword] = useState('');
-  const correctPassword = '1234'; 
+  const [doorPassword, setDoorPassword] = useState('');
+  const [doorOpened, setDoorOpened] = useState(false);
+
+  const doorAction = doorOpened ? 'trancar' : 'destrancar';
 
   // Função handleLock modificada
   const handleLock = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/lock', {
-        username: 'nome_do_usuario', // ajuste com o username real
-        password: password
+      const response = await fetch(config.apiUrl + (doorOpened ? '/lock' : '/unlock'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: 'lucas@gmail.com', doorPassword: doorPassword })
       });
 
-      Alert.alert('Sucesso', response.data.message);
-      navigation.navigate('Locked');
+      const result = await response.json();
+
+      if (result.message) {
+        Alert.alert(result.message);
+        setDoorOpened(!doorOpened);
+      }
+      
+      Alert.alert("Senha incorreta");
+      console.log(result);
 
     } catch (error) {
-      console.error('Erro na tentativa de trancar a porta:', error.response?.data || error);
-      Alert.alert('Erro', error.response?.data?.message || 'Não foi possível trancar a porta.');
+      Alert.alert(`Erro ao ${doorAction} a porta`);
     }
   };
-
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -36,15 +46,6 @@ export default function index() {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
     >
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-          <View style={styles.iconContainer}>
-            <Image
-              source={require('@/assets/images/menu-icon.png')}
-              style={styles.headerImage}
-            />
-          </View>
-        </TouchableOpacity>
-
         <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
           <View style={styles.iconContainer}>
             <Image
@@ -56,23 +57,23 @@ export default function index() {
       </View>
 
       <Image
-        source={require('@/assets/images/unlocked-status.png')}
+        source={doorOpened ? require('@/assets/images/unlocked-status.png') : require('@/assets/images/locked-status.png')}
         style={[styles.statusButton, { marginTop: 20 }]}
       />
 
       <TouchableOpacity style={styles.unlockButton} onPress={handleLock}>
         <Image
-          source={require('@/assets/images/locked-icon.png')}
+          source={doorOpened ? require('@/assets/images/unlocked-icon.png') : require('@/assets/images/locked-icon.png')}
           style={styles.unlockImage}
         />
       </TouchableOpacity>
 
       <TextInput
         style={styles.passwordInput}
-        placeholder="Digite a sua senha:"
+        placeholder="Digite a senha da porta:"
         secureTextEntry
-        value={password}
-        onChangeText={setPassword}
+        value={doorPassword}
+        onChangeText={setDoorPassword}
       />
 
       <View style={styles.bottomNav}>

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import axios from 'axios';
-import { FontAwesome } from '@expo/vector-icons'; // Certifique-se de que você tenha essa biblioteca instalada
+import { TextInputCustom } from '@/components/TextInputCustom';
+import { PasswordInputCustom } from '@/components/PasswordInputCustom';
+import { config } from '@/config/environment';
 
 type SignUpScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignUpScreen'>;
 
@@ -16,30 +18,46 @@ export default function SignUpScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [doorPassword, setDoorPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [showDoorPassword, setShowDoorPassword] = useState(false);
+
+  const clearFields = () => {
+    setName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setDoorPassword('');
+    setErrorMessage('');
+  };
 
   const handleSignUp = async () => {
-    if (!name || !email || !password || !confirmPassword || !doorPassword) {
+    // Validando se todos os campos estão preenchidos
+    const anyFieldEmpty = !name || !email || !password || !confirmPassword || !doorPassword;
+
+    if (anyFieldEmpty) {
       setErrorMessage("Todos os campos são obrigatórios!");
+      console.log(`Dados: ${name}, ${email}, ${password}, ${confirmPassword}, ${doorPassword}`);
       return;
     }
 
+    // Verificação de senhas iguais
     if (password !== confirmPassword) {
       setErrorMessage("As senhas de login não coincidem!");
       return;
     }
 
-    // Exemplo de validação de e-mail (pode ser melhorado)
+    // Validação de e-mail
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!emailPattern.test(email)) {
       setErrorMessage("Por favor, insira um e-mail válido.");
       return;
     }
 
+    // Cadastro do usuário no backend
     try {
-      const response = await axios.post('http://10.254.128.157:3000/cadastrar', {
+      console.log(`Dados: ${name}, ${email}, ${password}, ${confirmPassword}, ${doorPassword}`);
+      console.log(config.apiUrl);
+      
+      const response = await axios.post(config.apiUrl + '/cadastrar', {
         name,
         email,
         password,
@@ -47,11 +65,7 @@ export default function SignUpScreen() {
       });
       console.log('Usuário cadastrado com sucesso:', response.data);
       // Redefinindo os campos após o cadastro
-      setName('');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
-      setDoorPassword('');
+      clearFields();
       navigation.navigate('SignInScreen');
     } catch (error) {
       console.error('Erro ao cadastrar o usuário:', error);
@@ -64,44 +78,32 @@ export default function SignUpScreen() {
       <Image source={require('@/assets/images/handle-icon.png')} style={styles.logo} />
       <Text style={styles.appName}>SmartLock</Text>
       {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-      <TextInput style={styles.input} placeholder="Nome" value={name} onChangeText={setName} />
-      <TextInput style={styles.input} placeholder="E-mail" value={email} onChangeText={setEmail} keyboardType="email-address" />
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Senha"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={!showPassword}
+      <View style={styles.inputContainer}>
+        <TextInputCustom 
+          placeholder="Nome"
+          value={name}
+          onChangeText={setName}
         />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <FontAwesome name={showPassword ? 'eye' : 'eye-slash'} size={20} color="#FF7690" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Confirmar Senha"
+        <TextInputCustom 
+          placeholder="E-mail"
+          inputMode="email"
+          onChangeText={setEmail}
+        /> 
+        <PasswordInputCustom 
+            placeholder="Senha"
+            value={password}
+            onChangeText={setPassword}
+          />
+        <PasswordInputCustom 
+          placeholder="Confirmar senha"
           value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry={!showConfirmPassword}
+          onChangeText={setConfirmPassword} 
         />
-        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-          <FontAwesome name={showConfirmPassword ? 'eye' : 'eye-slash'} size={20} color="#FF7690" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.input}
+        <PasswordInputCustom 
           placeholder="Senha da Porta"
           value={doorPassword}
           onChangeText={setDoorPassword}
-          keyboardType="numeric"
-          secureTextEntry={!showDoorPassword}
         />
-        <TouchableOpacity onPress={() => setShowDoorPassword(!showDoorPassword)}>
-          <FontAwesome name={showDoorPassword ? 'eye' : 'eye-slash'} size={20} color="#FF7690" />
-        </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
         <Text style={styles.signUpText}>Cadastrar</Text>
@@ -146,9 +148,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     color: '#FF7690',
   },
-  passwordContainer: {
+  inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
     width: '80%',
     marginBottom: 15,
   },

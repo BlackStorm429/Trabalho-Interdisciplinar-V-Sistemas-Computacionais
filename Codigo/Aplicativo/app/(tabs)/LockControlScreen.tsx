@@ -1,20 +1,23 @@
+import { config } from '@/config/environment';
 import React from 'react';
 import { View, Button, TextInput, Text, Alert, StyleSheet } from 'react-native';
 
 const LockControlScreen: React.FC = () => {
-  const [password, setPassword] = React.useState('');
+  const [doorPassword, setDoorPassword] = React.useState('');
 
   const lockDoor = async () => {
     try {
-      const response = await fetch('http://192.168.1.10/lock', {
+      const response = await fetch(config.apiUrl + '/lock', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ password })
+        body: JSON.stringify({ email: 'lucas@gmail.com', doorPassword: doorPassword })
       });
       const result = await response.json();
       Alert.alert(result.message);
+      console.log(result.message);
+      
     } catch (error) {
       Alert.alert('Erro ao trancar a porta');
     }
@@ -22,15 +25,17 @@ const LockControlScreen: React.FC = () => {
 
   const unlockDoor = async () => {
     try {
-      const response = await fetch('http://192.168.1.10/unlock', {
+      const response = await fetch(config.apiUrl + '/unlock', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ password })
+        body: JSON.stringify({ email: 'lucas@gmail.com', doorPassword: doorPassword })
       });
       const result = await response.json();
       Alert.alert(result.message);
+      console.log(result.message);
+
     } catch (error) {
       Alert.alert('Erro ao destrancar a porta');
     }
@@ -43,8 +48,8 @@ const LockControlScreen: React.FC = () => {
         style={styles.input}
         secureTextEntry
         placeholder="Senha"
-        value={password}
-        onChangeText={setPassword}
+        value={doorPassword}
+        onChangeText={setDoorPassword}
       />
       <Button title="Trancar Porta" onPress={lockDoor} />
       <View style={{ height: 20 }} />
