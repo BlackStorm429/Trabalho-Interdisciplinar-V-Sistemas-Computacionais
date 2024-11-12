@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
@@ -7,6 +7,7 @@ import axios from 'axios';
 import { TextInputCustom } from '@/components/TextInputCustom';
 import { PasswordInputCustom } from '@/components/PasswordInputCustom';
 import { ENV } from '@/config/environment';
+import { Colors } from '@/constants/Colors';
 
 type SignUpScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignUpScreen'>;
 
@@ -73,6 +74,73 @@ export default function SignUpScreen() {
     }
   };
 
+  const colorScheme = useColorScheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: Colors[colorScheme ?? "light"].background,
+      paddingHorizontal: 20,
+    },
+    keyboardContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+    },
+    logo: {
+      width: 100,
+      height: 100,
+      marginBottom: 20,
+    },
+    appName: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      color: Colors[colorScheme ?? "light"].text,
+      marginBottom: 30,
+    },
+    errorText: {
+      color: 'red',
+      marginBottom: 15,
+    },
+    input: {
+      width: '80%',
+      padding: 10,
+      backgroundColor: Colors[colorScheme ?? "light"].inputBackground,
+      borderRadius: 10,
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 15,
+      color: Colors[colorScheme ?? "light"].text,
+    },
+    inputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      flexWrap: 'wrap',
+      width: '80%',
+      marginBottom: 15,
+    },
+    signUpButton: {
+      width: '80%',
+      padding: 15,
+      backgroundColor: Colors[colorScheme ?? "light"].buttonBackground,
+      borderRadius: 10,
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    signUpText: {
+      color: Colors[colorScheme ?? "light"].text,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    signinText: {
+      color: Colors[colorScheme ?? "light"].text,
+      marginTop: 10,
+    },
+  });
+
   return (
     <View style={styles.container}>
       <Image source={require('@/assets/images/handle-icon.png')} style={styles.logo} />
@@ -114,68 +182,3 @@ export default function SignUpScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFE4E9',
-    paddingHorizontal: 20,
-  },
-  keyboardContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
-  appName: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FF7690',
-    marginBottom: 30,
-  },
-  errorText: {
-    color: 'red',
-    marginBottom: 15,
-  },
-  input: {
-    width: '80%',
-    padding: 10,
-    backgroundColor: '#FFD6E2',
-    borderRadius: 10,
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 15,
-    color: '#FF7690',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    width: '80%',
-    marginBottom: 15,
-  },
-  signUpButton: {
-    width: '80%',
-    padding: 15,
-    backgroundColor: '#FF7690',
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  signUpText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  signinText: {
-    color: '#FF7690',
-    marginTop: 10,
-  },
-});

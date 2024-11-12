@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, Alert, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, Alert, Dimensions, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { ENV } from '@/config/environment';
+import { Colors } from '@/constants/Colors';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
 
@@ -13,6 +14,89 @@ export default function index() {
   const [doorOpened, setDoorOpened] = useState(false);
 
   const doorAction = doorOpened ? 'trancar' : 'destrancar';
+
+  const colorScheme = useColorScheme();
+
+  useEffect(() => {
+    console.log(colorScheme);
+  }, [colorScheme]);
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      backgroundColor: Colors[colorScheme ?? "light"].background,
+      color: Colors[colorScheme ?? "light"].text,
+      paddingHorizontal: 20,
+    },
+    keyboardContainer: {
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      width: '100%',
+      height: '80%',
+    },
+    header: {
+      width: '100%',
+      height: '10%',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: 20,
+      marginTop: 60,
+    },
+    headerImage: {
+      width: 30,
+      height: 30,
+    },
+    statusButton: {
+      width: 60,
+      height: 60,
+      marginTop: 40,
+    },
+    unlockButton: {
+      width: 150,
+      height: 150,
+      backgroundColor: Colors[colorScheme ?? "light"].buttonBackground,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 75,
+      marginTop: 50,
+    },
+    unlockImage: {
+      width: 70,
+      height: 70,
+    },
+    passwordInput: {
+      width: '80%',
+      padding: 10,
+      backgroundColor: Colors[colorScheme ?? "light"].inputBackground,
+      borderRadius: 10,
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 40,
+      marginTop: 40,
+    },
+    bottomNav: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      width: '100%',
+      height: '10%',
+      position: 'absolute',
+      bottom: 30,
+      paddingHorizontal: 50,
+    },
+    iconContainer: {
+      backgroundColor: Colors[colorScheme ?? "light"].buttonBackground,
+      padding: 10,
+      borderRadius: 10,
+    },
+    iconImage: {
+      width: 40,
+      height: 40,
+    },
+  });
+
 
   // Função handleLock modificada
   const handleLock = async () => {
@@ -39,6 +123,7 @@ export default function index() {
       Alert.alert(`Erro ao ${doorAction} a porta`);
     }
   };
+
   return (
     <View
     style={styles.container}
@@ -73,7 +158,8 @@ export default function index() {
 
         <TextInput
           style={styles.passwordInput}
-          placeholder="Digite a senha da porta:"
+          placeholder="Digite a senha da porta"
+          placeholderTextColor={Colors[colorScheme ?? "light"].text}
           secureTextEntry
           value={doorPassword}
           onChangeText={setDoorPassword}
@@ -112,79 +198,3 @@ export default function index() {
   );
 }
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: '#FFE4E9',
-    paddingHorizontal: 20,
-  },
-  keyboardContainer: {
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%',
-    height: '80%',
-  },
-  header: {
-    width: '100%',
-    height: '10%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 20,
-    marginTop: 60,
-  },
-  headerImage: {
-    width: 30,
-    height: 30,
-  },
-  statusButton: {
-    width: 60,
-    height: 60,
-    marginTop: 40,
-  },
-  unlockButton: {
-    width: 150,
-    height: 150,
-    backgroundColor: '#FF7690',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 75,
-    marginTop: 50,
-  },
-  unlockImage: {
-    width: 70,
-    height: 70,
-  },
-  passwordInput: {
-    width: '80%',
-    padding: 10,
-    backgroundColor: '#FFD6E2',
-    borderRadius: 10,
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 40,
-    marginTop: 40,
-    color: '#FF7690',
-  },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    height: '10%',
-    position: 'absolute',
-    bottom: 30,
-    paddingHorizontal: 50,
-  },
-  iconContainer: {
-    backgroundColor: '#FF7690',
-    padding: 10,
-    borderRadius: 10,
-  },
-  iconImage: {
-    width: 40,
-    height: 40,
-  },
-});

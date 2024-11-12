@@ -1,4 +1,6 @@
-import { StyleSheet, InputModeOptions, TextInput, View } from "react-native";
+import { Colors } from "@/constants/Colors";
+import React from "react";
+import { StyleSheet, InputModeOptions, TextInput, View, useColorScheme } from "react-native";
 
 interface TextInputCustomProps {
   placeholder: string;
@@ -8,6 +10,25 @@ interface TextInputCustomProps {
 }
 
 export function TextInputCustom({ placeholder, onChangeText, inputMode, value }: TextInputCustomProps) {
+  const colorScheme = useColorScheme();
+
+  const styles = StyleSheet.create({
+    textInputContainer: {
+      width: '100%',
+      flexDirection: 'row',
+      backgroundColor: Colors[colorScheme ?? "light"].inputBackground,
+      borderRadius: 10,
+      marginBottom: 20,
+    },
+    passwordInput: {
+      flex: 1,
+      padding: 10,
+      textAlign: 'center',
+      fontSize: 16,
+      color: Colors[colorScheme ?? "light"].text,
+    }
+  });
+
   return (
     <View style={styles.textInputContainer}>
       <TextInput
@@ -15,26 +36,9 @@ export function TextInputCustom({ placeholder, onChangeText, inputMode, value }:
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="gray"
+        placeholderTextColor={Colors[colorScheme ?? "light"].text}
         inputMode={inputMode}
       />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  textInputContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    backgroundColor: '#FFD6E2',
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  passwordInput: {
-    flex: 1,
-    padding: 10,
-    textAlign: 'center',
-    fontSize: 16,
-    color: '#FF7690',
-  }
-});

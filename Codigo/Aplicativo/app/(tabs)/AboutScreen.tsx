@@ -1,13 +1,88 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
+import { Colors } from '@/constants/Colors';
 
 type AboutScreenNavigationProp = StackNavigationProp<RootStackParamList, 'AboutScreen'>;
 
 export default function AboutScreen() {
   const navigation = useNavigation<AboutScreenNavigationProp>();
+
+  const colorScheme = useColorScheme();
+
+  useEffect(() => {
+    console.log(colorScheme);
+  }, [colorScheme]);
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: Colors[colorScheme ?? "light"].background,
+    },
+    iconContainer: {
+      backgroundColor: Colors[colorScheme ?? "light"].buttonBackground, 
+      padding: 10,
+      borderRadius: 10,
+      position: 'absolute',
+      top: 40,
+      left: 20,
+    },
+    backIcon: {
+      width: 30,
+      height: 30,
+    },
+    logo: {
+      width: 100,
+      height: 100,
+      alignSelf: 'center',
+      marginTop: 100,
+      marginVertical: 20,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      color: Colors[colorScheme ?? "light"].text,
+      marginBottom: 10,
+    },
+    description: {
+      textAlign: 'center',
+      color: Colors[colorScheme ?? "light"].text,
+      marginBottom: 30,
+    },
+    subTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: Colors[colorScheme ?? "light"].text,
+      marginBottom: 10,
+    },
+    developerContainer: {
+      flexDirection: 'column',
+    },
+    developerItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    devImage: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      marginRight: 15,
+    },
+    devName: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: Colors[colorScheme ?? "light"].text,
+    },
+    devRole: {
+      fontSize: 14,
+      color: Colors[colorScheme ?? "light"].text,
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -75,70 +150,3 @@ export default function AboutScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#FFE4E9',
-  },
-  iconContainer: {
-    backgroundColor: '#FF7690', 
-    padding: 10,
-    borderRadius: 10,
-    position: 'absolute',
-    top: 40,
-    left: 20,
-  },
-  backIcon: {
-    width: 30,
-    height: 30,
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
-    marginVertical: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#FF7690',
-    marginBottom: 10,
-  },
-  description: {
-    textAlign: 'center',
-    color: '#FF7690',
-    marginBottom: 30,
-  },
-  subTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FF7690',
-    marginBottom: 10,
-  },
-  developerContainer: {
-    flexDirection: 'column',
-  },
-  developerItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  devImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 15,
-  },
-  devName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FF7690',
-  },
-  devRole: {
-    fontSize: 14,
-    color: '#FF7690',
-  },
-});

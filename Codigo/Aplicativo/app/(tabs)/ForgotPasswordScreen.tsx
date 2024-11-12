@@ -1,14 +1,65 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
+import { Colors } from '@/constants/Colors';
 
 type ForgotPasswordScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ForgotPasswordScreen'>;
 
 export default function ForgotPasswordScreen() {
   const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
   const [email, setEmail] = useState('');
+
+  const colorScheme = useColorScheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: Colors[colorScheme ?? "light"].background,
+      paddingHorizontal: 20,
+    },
+    logo: {
+      width: 100,
+      height: 100,
+      marginBottom: 20,
+    },
+    appName: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      color: Colors[colorScheme ?? "light"].text,
+      marginBottom: 30,
+    },
+    input: {
+      width: '80%',
+      padding: 10,
+      backgroundColor: Colors[colorScheme ?? "light"].inputBackground,
+      borderRadius: 10,
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 15,
+      color: Colors[colorScheme ?? "light"].text,
+    },
+    forgotPasswordButton: {
+      width: '80%',
+      padding: 15,
+      backgroundColor: Colors[colorScheme ?? "light"].buttonBackground,
+      borderRadius: 10,
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    forgotPasswordText: {
+      color: Colors[colorScheme ?? "light"].text,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    signinText: {
+      color: Colors[colorScheme ?? "light"].text,
+      marginTop: 10,
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -23,6 +74,7 @@ export default function ForgotPasswordScreen() {
       <TextInput
         style={styles.input}
         placeholder="Digite seu E-mail"
+        placeholderTextColor={Colors[colorScheme ?? "light"].text}
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -42,51 +94,3 @@ export default function ForgotPasswordScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFE4E9',
-    paddingHorizontal: 20,
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
-  appName: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FF7690',
-    marginBottom: 30,
-  },
-  input: {
-    width: '80%',
-    padding: 10,
-    backgroundColor: '#FFD6E2',
-    borderRadius: 10,
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 15,
-    color: '#FF7690',
-  },
-  forgotPasswordButton: {
-    width: '80%',
-    padding: 15,
-    backgroundColor: '#FF7690',
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  forgotPasswordText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  signinText: {
-    color: '#FF7690',
-    marginTop: 10,
-  },
-});
