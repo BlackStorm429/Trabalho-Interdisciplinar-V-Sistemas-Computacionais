@@ -7,18 +7,15 @@ const User = require('./models/User');
 const app = express();
 const PORT = 3000;
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Configuração do Sequelize
 const sequelize = new Sequelize('smartlockdb', 'postgres', 'senha1234', {
   host: 'localhost',
   dialect: 'postgres',
   port: 5432
 });
 
-// Testa a conexão
 sequelize.authenticate()
   .then(() => {
     console.log('Conexão ao banco de dados PostgreSQL estabelecida com sucesso.');
@@ -31,7 +28,6 @@ sequelize.authenticate()
 app.post('/cadastrar', async (req, res) => {
   const { name, email, password, doorPassword } = req.body;
 
-  // Lógica de cadastro
   if (!name || !email || !password || !doorPassword) {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
   }
@@ -49,7 +45,6 @@ app.post('/cadastrar', async (req, res) => {
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   
-  // Lógica de login
   if (!email || !password) {
     return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
   }
@@ -77,7 +72,6 @@ app.post('/login', async (req, res) => {
 app.post('/lock', async (req, res) => {
   const { email, doorPassword } = req.body;
 
-  // Lógica para trancar a porta
   if (!email || !doorPassword) {
     return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
   }
@@ -105,7 +99,6 @@ app.post('/lock', async (req, res) => {
 app.post('/unlock', async (req, res) => {
   const { email, doorPassword } = req.body;
 
-  // Lógica para trancar a porta
   if (!email || !doorPassword) {
     return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
   }

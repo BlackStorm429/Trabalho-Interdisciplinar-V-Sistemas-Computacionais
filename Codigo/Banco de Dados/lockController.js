@@ -1,4 +1,3 @@
-// Importações necessárias
 const axios = require('axios');
 const pool = require('../database'); // Conexão ao PostgreSQL
 
