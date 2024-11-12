@@ -16,10 +16,6 @@ export default function SettingsScreen() {
 
   const colorScheme = useColorScheme();
 
-  useEffect(() => {
-    console.log(colorScheme);
-  }, [colorScheme]);
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,

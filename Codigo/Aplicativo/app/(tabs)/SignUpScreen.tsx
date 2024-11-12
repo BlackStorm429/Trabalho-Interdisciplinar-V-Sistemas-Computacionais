@@ -65,7 +65,6 @@ export default function SignUpScreen() {
         doorPassword,
       });
       console.log('Usuário cadastrado com sucesso:', response.data);
-      // Redefinindo os campos após o cadastro
       clearFields();
       navigation.navigate('SignInScreen');
     } catch (error) {

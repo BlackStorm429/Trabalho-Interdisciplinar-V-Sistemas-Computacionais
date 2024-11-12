@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, useColorSch
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
-import axios from 'axios'; // Adicione esta importação
+import axios from 'axios';
 import { ENV } from '@/config/environment';
 import { Colors } from '@/constants/Colors';
 

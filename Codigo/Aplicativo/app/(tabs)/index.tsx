@@ -17,10 +17,6 @@ export default function index() {
 
   const colorScheme = useColorScheme();
 
-  useEffect(() => {
-    console.log(colorScheme);
-  }, [colorScheme]);
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -97,8 +93,6 @@ export default function index() {
     },
   });
 
-
-  // Função handleLock modificada
   const handleLock = async () => {
     try {
       const response = await fetch(ENV.API_URL + (doorOpened ? '/lock' : '/unlock'), {
