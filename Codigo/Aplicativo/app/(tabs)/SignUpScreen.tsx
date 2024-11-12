@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
@@ -122,6 +122,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFE4E9',
     paddingHorizontal: 20,
+  },
+  keyboardContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
   logo: {
     width: 100,

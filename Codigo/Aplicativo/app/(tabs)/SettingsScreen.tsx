@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Switch, StyleSheet, Image, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
@@ -19,7 +19,11 @@ export default function SettingsScreen() {
       <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.goBack()}>
         <Image source={require('@/assets/images/back-icon.png')} style={styles.backIcon} />
       </TouchableOpacity>
-
+      <KeyboardAvoidingView
+        style={styles.keyboardContainer}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+      >
       <View style={styles.content}>
         {/* Campo de E-mail */}
         <Text style={styles.sectionTitle}>Alterar E-mail</Text>
@@ -59,7 +63,7 @@ export default function SettingsScreen() {
           />
         </View>
       </View>
-
+      </KeyboardAvoidingView>
       {/* Botão de Logout */}
       <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.navigate('SignInScreen')}>
         <Text style={styles.logoutText}>Sair</Text>
@@ -74,6 +78,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFE4E9',
     paddingHorizontal: 20,
     justifyContent: 'space-between',
+  },
+  keyboardContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '80%',
   },
   iconContainer: {
     backgroundColor: '#FF7690',

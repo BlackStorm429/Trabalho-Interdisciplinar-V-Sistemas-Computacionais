@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, Alert, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
@@ -40,10 +40,8 @@ export default function index() {
     }
   };
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+    <View
+    style={styles.container}
     >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
@@ -55,27 +53,32 @@ export default function index() {
           </View>
         </TouchableOpacity>
       </View>
-
-      <Image
-        source={doorOpened ? require('@/assets/images/unlocked-status.png') : require('@/assets/images/locked-status.png')}
-        style={[styles.statusButton, { marginTop: 20 }]}
-      />
-
-      <TouchableOpacity style={styles.unlockButton} onPress={handleLock}>
+    
+      <KeyboardAvoidingView
+        style={styles.keyboardContainer}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+      >
         <Image
-          source={doorOpened ? require('@/assets/images/unlocked-icon.png') : require('@/assets/images/locked-icon.png')}
-          style={styles.unlockImage}
+          source={doorOpened ? require('@/assets/images/unlocked-status.png') : require('@/assets/images/locked-status.png')}
+          style={[styles.statusButton, { marginTop: 20 }]}
         />
-      </TouchableOpacity>
 
-      <TextInput
-        style={styles.passwordInput}
-        placeholder="Digite a senha da porta:"
-        secureTextEntry
-        value={doorPassword}
-        onChangeText={setDoorPassword}
-      />
+        <TouchableOpacity style={styles.unlockButton} onPress={handleLock}>
+          <Image
+            source={doorOpened ? require('@/assets/images/unlocked-icon.png') : require('@/assets/images/locked-icon.png')}
+            style={styles.unlockImage}
+          />
+        </TouchableOpacity>
 
+        <TextInput
+          style={styles.passwordInput}
+          placeholder="Digite a senha da porta:"
+          secureTextEntry
+          value={doorPassword}
+          onChangeText={setDoorPassword}
+        />
+      </KeyboardAvoidingView>
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
           <View style={styles.iconContainer}>
@@ -104,9 +107,11 @@ export default function index() {
           </View>
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+
+    </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -116,8 +121,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFE4E9',
     paddingHorizontal: 20,
   },
+  keyboardContainer: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+    height: '80%',
+  },
   header: {
     width: '100%',
+    height: '10%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
@@ -161,6 +173,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
+    height: '10%',
     position: 'absolute',
     bottom: 30,
     paddingHorizontal: 50,

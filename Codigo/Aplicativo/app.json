@@ -19,7 +19,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "softwareKeyboardLayoutMode":"pan"
+      
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#00000000"
     },
     "web": {
       "bundler": "metro",
