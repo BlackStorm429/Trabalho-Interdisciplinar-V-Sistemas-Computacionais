@@ -4,13 +4,15 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { Colors } from '@/constants/Colors';
+import { useTheme } from '@/contexts/ThemeContext';
 
 type AboutScreenNavigationProp = StackNavigationProp<RootStackParamList, 'AboutScreen'>;
 
 export default function AboutScreen() {
   const navigation = useNavigation<AboutScreenNavigationProp>();
+  const { darkMode } = useTheme();
 
-  const colorScheme = useColorScheme();
+  const colorScheme = darkMode ? "dark" : "light";
 
   const styles = StyleSheet.create({
     container: {

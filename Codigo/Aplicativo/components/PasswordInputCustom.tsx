@@ -3,6 +3,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useState } from "react";
 import React from "react";
 import { Colors } from "@/constants/Colors";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface PasswordInputCustomProps {
   placeholder: string;
@@ -13,7 +14,9 @@ interface PasswordInputCustomProps {
 
 export function PasswordInputCustom({ placeholder, onChangeText, inputMode, value }: PasswordInputCustomProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const colorScheme = useColorScheme();
+  const { darkMode } = useTheme();
+
+  const colorScheme = darkMode ? "dark" : "light";
 
   const styles = StyleSheet.create({
     textInputContainer: {

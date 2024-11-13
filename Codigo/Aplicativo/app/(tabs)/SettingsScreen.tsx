@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { Colors } from '@/constants/Colors';
+import { useTheme } from '@/contexts/ThemeContext';
 
 type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SettingsScreen'>;
 
@@ -12,9 +13,9 @@ export default function SettingsScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleDarkMode } = useTheme();
 
-  const colorScheme = useColorScheme();
+  const colorScheme = darkMode ? "dark" : "light";
 
   const styles = StyleSheet.create({
     container: {
@@ -142,7 +143,7 @@ export default function SettingsScreen() {
           <Text style={styles.switchLabel}>Modo Escuro</Text>
           <Switch
             value={darkMode}
-            onValueChange={(value) => setDarkMode(value)}
+            onValueChange={toggleDarkMode}
           />
         </View>
       </View>

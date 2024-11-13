@@ -8,6 +8,7 @@ import { TextInputCustom } from '@/components/TextInputCustom';
 import { PasswordInputCustom } from '@/components/PasswordInputCustom';
 import { ENV } from '@/config/environment';
 import { Colors } from '@/constants/Colors';
+import { useTheme } from '@/contexts/ThemeContext';
 
 type SignUpScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignUpScreen'>;
 
@@ -19,7 +20,8 @@ export default function SignUpScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [doorPassword, setDoorPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
+  const { darkMode } = useTheme();
+  
   const clearFields = () => {
     setName('');
     setEmail('');
@@ -73,7 +75,7 @@ export default function SignUpScreen() {
     }
   };
 
-  const colorScheme = useColorScheme();
+  const colorScheme = darkMode ? "dark" : "light";
 
   const styles = StyleSheet.create({
     container: {

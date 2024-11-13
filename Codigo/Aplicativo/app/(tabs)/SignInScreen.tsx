@@ -6,6 +6,7 @@ import { RootStackParamList } from '../types';
 import axios from 'axios';
 import { ENV } from '@/config/environment';
 import { Colors } from '@/constants/Colors';
+import { useTheme } from '@/contexts/ThemeContext';
 
 type SignInScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignInScreen'>;
 
@@ -13,6 +14,7 @@ export default function SignInScreen() {
   const navigation = useNavigation<SignInScreenNavigationProp>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { darkMode } = useTheme();
 
   const handleSignIn = async () => {
     try {
@@ -30,7 +32,7 @@ export default function SignInScreen() {
     }
   };
 
-  const colorScheme = useColorScheme();
+  const colorScheme = darkMode ? "dark" : "light";
 
   const styles = StyleSheet.create({
     container: {

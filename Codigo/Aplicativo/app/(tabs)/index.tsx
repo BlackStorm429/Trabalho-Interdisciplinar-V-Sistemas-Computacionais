@@ -5,6 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { ENV } from '@/config/environment';
 import { Colors } from '@/constants/Colors';
+import { useTheme } from '@/contexts/ThemeContext';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
 
@@ -12,10 +13,11 @@ export default function index() {
   const navigation = useNavigation<NavigationProp>();
   const [doorPassword, setDoorPassword] = useState('');
   const [doorOpened, setDoorOpened] = useState(false);
+  const { darkMode } = useTheme();
 
   const doorAction = doorOpened ? 'trancar' : 'destrancar';
 
-  const colorScheme = useColorScheme();
+  const colorScheme = darkMode ? "dark" : "light";
 
   const styles = StyleSheet.create({
     container: {

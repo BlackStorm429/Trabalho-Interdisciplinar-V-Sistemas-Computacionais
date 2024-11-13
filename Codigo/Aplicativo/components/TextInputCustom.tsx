@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/Colors";
+import { useTheme } from "@/contexts/ThemeContext";
 import React from "react";
 import { StyleSheet, InputModeOptions, TextInput, View, useColorScheme } from "react-native";
 
@@ -10,7 +11,9 @@ interface TextInputCustomProps {
 }
 
 export function TextInputCustom({ placeholder, onChangeText, inputMode, value }: TextInputCustomProps) {
-  const colorScheme = useColorScheme();
+  const { darkMode } = useTheme();
+
+  const colorScheme = darkMode ? "dark" : "light";
 
   const styles = StyleSheet.create({
     textInputContainer: {

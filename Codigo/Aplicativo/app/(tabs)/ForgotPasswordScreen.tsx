@@ -4,14 +4,16 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { Colors } from '@/constants/Colors';
+import { useTheme } from '@/contexts/ThemeContext';
 
 type ForgotPasswordScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ForgotPasswordScreen'>;
 
 export default function ForgotPasswordScreen() {
   const navigation = useNavigation<ForgotPasswordScreenNavigationProp>();
   const [email, setEmail] = useState('');
-
-  const colorScheme = useColorScheme();
+  const { darkMode } = useTheme();
+  
+  const colorScheme = darkMode ? "dark" : "light";
 
   const styles = StyleSheet.create({
     container: {
