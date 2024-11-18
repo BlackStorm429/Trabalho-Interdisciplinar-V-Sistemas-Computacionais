@@ -53,7 +53,7 @@ export default function ForgotPasswordScreen() {
       marginBottom: 10,
     },
     forgotPasswordText: {
-      color: Colors[colorScheme ?? "light"].text,
+      color: Colors[colorScheme ?? "light"].textButton,
       fontSize: 16,
       fontWeight: 'bold',
     },

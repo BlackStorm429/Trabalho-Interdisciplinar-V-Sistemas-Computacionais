@@ -89,7 +89,7 @@ export default function SettingsScreen() {
       marginBottom: 40, 
     },
     logoutText: {
-      color: Colors[colorScheme ?? "light"].text,
+      color: Colors[colorScheme ?? "light"].textButton,
       fontSize: 16,
       fontWeight: 'bold',
     },
@@ -150,7 +150,7 @@ export default function SettingsScreen() {
       </KeyboardAvoidingView>
       {/* Botão de Logout */}
       <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.navigate('SignInScreen')}>
-        <Text style={styles.logoutText}>Sair</Text>
+        <Text style={ styles.logoutText}>Sair</Text>
       </TouchableOpacity>
     </View>
   );

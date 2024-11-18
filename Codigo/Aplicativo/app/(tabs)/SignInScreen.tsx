@@ -72,7 +72,7 @@ export default function SignInScreen() {
       marginBottom: 10,
     },
     loginText: {
-      color: Colors[colorScheme ?? "light"].text,
+      color: Colors[colorScheme ?? "light"].textButton,
       fontSize: 16,
       fontWeight: 'bold',
     },

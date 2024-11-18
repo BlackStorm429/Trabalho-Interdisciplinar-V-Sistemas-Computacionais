@@ -132,7 +132,7 @@ export default function SignUpScreen() {
       marginBottom: 10,
     },
     signUpText: {
-      color: Colors[colorScheme ?? "light"].text,
+      color: Colors[colorScheme ?? "light"].textButton,
       fontSize: 16,
       fontWeight: 'bold',
     },
