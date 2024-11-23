@@ -5,7 +5,7 @@ Servo Fechadura;  // controlar servomotor (simula a fechadura)
 
 #define pino_ESP 7  // pino q recebe pulsos do módulo Wifi -> porta digital 7 (Arduino) conectada no GPIO2 (ESP-01)
 
-#define LED_VERDE 11
+#define LED_VERDE 9
 #define LED_VERMELHO 10
 
 // Variáveis p/cálculo da duração do pulso
@@ -20,12 +20,6 @@ void setup() {
   pinMode(pino_ESP, INPUT);
   pinMode(LED_VERDE, OUTPUT);
   pinMode(LED_VERMELHO, OUTPUT);
-
-  Fechadura.write(45);  // posição inicial do servomotor (trancada)
-
-  // Configuração inicial dos LEDs (só vermelho aceso -> trancada)
-  digitalWrite(LED_VERDE, 0);
-  digitalWrite(LED_VERMELHO, 1);
 }
 
 void loop() {
@@ -38,7 +32,7 @@ void loop() {
   }
 
   else if (pulso > 50) {  // pulso maior que 50ms -> servomotor move p/trancar e só LED vermelho acende
-    Fechadura.write(45);
+    Fechadura.write(0);
     digitalWrite(LED_VERDE, 0);
     digitalWrite(LED_VERMELHO, 1);
   }
