@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, Alert, Dimensions, useColorScheme } from 'react-native';
+import { View, Button, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, Alert, Dimensions, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
-import { ENV } from '@/config/environment';
 import { Colors } from '@/constants/Colors';
 import { useTheme } from '@/contexts/ThemeContext';
+import axios from 'axios';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
 
 export default function index() {
+  const IP_ESP8266 = 'http://192.168.36.24'; // definido de forma fixa no código do ESP
+  const CORRECT_PASSWORD = '123456'; // senha definida (TODO: mudar p/pegar a do usuário)
+  const AUTH_TOKEN = "TIV_2024/2"; // Token de autenticação
+
   const navigation = useNavigation<NavigationProp>();
   const [doorPassword, setDoorPassword] = useState('');
   const [doorOpened, setDoorOpened] = useState(false);
@@ -95,27 +99,25 @@ export default function index() {
     },
   });
 
+  const verifyPassword = (action: () => void) => {
+    if (doorPassword === CORRECT_PASSWORD) {
+      action();
+    } else {
+      Alert.alert("Erro", "Senha incorreta! Tente novamente.");
+    }
+  };
+
   const handleLock = async () => {
     try {
-      const response = await fetch(ENV.API_URL + (doorOpened ? '/lock' : '/unlock'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: 'lucas@gmail.com', doorPassword: doorPassword })
+      const route = doorOpened ? '/trancar' : '/destrancar';
+      const response = await axios.get(`${IP_ESP8266}${route}`, {
+        params: { token: AUTH_TOKEN },
       });
-
-      const result = await response.json();
-
-      if (result.message) {
-        Alert.alert(result.message);
-        setDoorOpened(!doorOpened);
-      }
-      
-      Alert.alert("Senha incorreta");
-      console.log(result);
-
+      console.log(response.data);
+      Alert.alert(response.data);
+      setDoorOpened(!doorOpened);
     } catch (error) {
+      console.log(error);
       Alert.alert(`Erro ao ${doorAction} a porta`);
     }
   };
@@ -145,7 +147,7 @@ export default function index() {
           style={[styles.statusButton, { marginTop: 20 }]}
         />
 
-        <TouchableOpacity style={styles.unlockButton} onPress={handleLock}>
+        <TouchableOpacity style={styles.unlockButton} onPress={() => verifyPassword(handleLock)}>
           <Image
             source={doorOpened ? require('@/assets/images/unlocked-icon.png') : require('@/assets/images/locked-icon.png')}
             style={styles.unlockImage}
