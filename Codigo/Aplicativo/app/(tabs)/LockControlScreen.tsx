@@ -2,8 +2,9 @@ import React from 'react';
 import { View, Button, TextInput, Text, Alert, StyleSheet } from 'react-native';
 import axios from 'axios';
 
-const IP_ESP8266 = 'http://192.168.36.24'; // sempre mudar para o IP atual do ESP8266
+const IP_ESP8266 = 'http://192.168.36.24'; // definido de forma fixa no código do ESP
 const CORRECT_PASSWORD = '123456'; // senha definida (TODO: mudar p/pegar a do usuário)
+const AUTH_TOKEN = "TIV_2024/2"; // Token de autenticação
 
 const LockControlScreen: React.FC = () => {
   const [doorPassword, setDoorPassword] = React.useState('');
@@ -18,7 +19,9 @@ const LockControlScreen: React.FC = () => {
 
   const lockDoor = async () => {
     try {
-      const response = await axios.get(`${IP_ESP8266}/trancar`);
+      const response = await axios.get(`${IP_ESP8266}/trancar`, {
+        params: { token: AUTH_TOKEN },
+      });
       console.log(response.data);
       Alert.alert("Resposta", response.data);
     } catch (error) {
@@ -29,7 +32,9 @@ const LockControlScreen: React.FC = () => {
 
   const unlockDoor = async () => {
     try {
-      const response = await axios.get(`${IP_ESP8266}/destrancar`);
+      const response = await axios.get(`${IP_ESP8266}/destrancar`, {
+        params: { token: AUTH_TOKEN },
+      });
       console.log(response.data);
       Alert.alert("Resposta", response.data);
     } catch (error) {

@@ -26,7 +26,7 @@ void loop() {
   checaPulso();  // calcula duração do pulso recebido
 
   if (pulso < 50) {  // pulso menor que 50ms -> servomotor move p/abrir e só LED verde acende
-    Fechadura.write(90);
+    Fechadura.write(60);
     digitalWrite(LED_VERDE, 1);
     digitalWrite(LED_VERMELHO, 0);
   }
