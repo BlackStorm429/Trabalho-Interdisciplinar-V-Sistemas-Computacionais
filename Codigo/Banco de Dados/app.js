@@ -2,7 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { Sequelize } = require('sequelize');
-const User = require('./models/User'); 
+//const User = require('./models/User'); 
+const bcrypt = require('bcrypt');
 
 const app = express();
 const PORT = 3000;
@@ -56,7 +57,8 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Usuário não encontrado.' });
     }
 
-    if (user.password !== password) {
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       return res.status(401).json({ error: 'Senha incorreta.' });
     }
 
@@ -68,60 +70,33 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Rota para trancar a porta
-app.post('/lock', async (req, res) => {
-  const { email, doorPassword } = req.body;
-
-  if (!email || !doorPassword) {
-    return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
+// Rota da porta (recuperar senha p/abrir e fechar)
+app.post('/door', async (req, res) => {
+  const { id, doorPassword } = req.body;
+  
+  if (!id || !doorPassword) {
+    return res.status(400).json({ error: 'ID e senha são obrigatórios.' });
   }
 
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { id } });
 
     if (!user) {
       return res.status(401).json({ error: 'Usuário não encontrado.' });
     }
 
-    if (user.doorPassword !== doorPassword) {
-      return res.status(401).json({ error: 'Senha da porta incorreta.' });
+    const isPasswordValid = await bcrypt.compare(doorPassword, user.doorPassword);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Senha incorreta.' });
     }
 
-    res.json({ message: 'Porta trancada com sucesso!' });
+    res.json({ message: 'Sucesso ao trancar/destrancar porta!', user: { name: user.name, email: user.email } });
 
-  } catch (e) {
-    console.error('Erro ao trancar a porta:', error);
-    res.status(500).json({ error: 'Erro ao trancar a porta, tente novamente.' });
+  } catch (error) {
+    console.error('Erro ao realizar operação na porta:', error);
+    res.status(500).json({ error: 'Erro ao realizar operação na porta, tente novamente.' });
   }
 });
-
-// Rota para trancar a porta
-app.post('/unlock', async (req, res) => {
-  const { email, doorPassword } = req.body;
-
-  if (!email || !doorPassword) {
-    return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
-  }
-
-  try {
-    const user = await User.findOne({ where: { email } });
-
-    if (!user) {
-      return res.status(401).json({ error: 'Usuário não encontrado.' });
-    }
-
-    if (user.doorPassword !== doorPassword) {
-      return res.status(401).json({ error: 'Senha da porta incorreta.' });
-    }
-
-    res.json({ message: 'Porta destrancada com sucesso!' });
-
-  } catch (e) {
-    console.error('Erro ao destrancar a porta:', error);
-    res.status(500).json({ error: 'Erro ao destrancar a porta, tente novamente.' });
-  }
-});
-
 
 // Inicia o servidor
 app.listen(PORT, () => {

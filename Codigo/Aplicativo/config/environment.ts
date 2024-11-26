@@ -1,4 +1,4 @@
 export const ENV = {
-    API_URL: 'http://your_api_url:3000',
+    API_URL: 'http://localhost:3000',
 };
   
