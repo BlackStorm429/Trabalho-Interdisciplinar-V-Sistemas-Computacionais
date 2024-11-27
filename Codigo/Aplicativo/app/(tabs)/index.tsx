@@ -6,12 +6,13 @@ import { RootStackParamList } from '../types';
 import { Colors } from '@/constants/Colors';
 import { useTheme } from '@/contexts/ThemeContext';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ENV } from '@/config/environment';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
 
 export default function index() {
   const IP_ESP8266 = 'http://192.168.36.24'; // definido de forma fixa no código do ESP
-  const CORRECT_PASSWORD = '123456'; // senha definida (TODO: mudar p/pegar a do usuário)
   const AUTH_TOKEN = "TIV_2024/2"; // Token de autenticação
 
   const navigation = useNavigation<NavigationProp>();
@@ -99,11 +100,31 @@ export default function index() {
     },
   });
 
-  const verifyPassword = (action: () => void) => {
-    if (doorPassword === CORRECT_PASSWORD) {
-      action();
-    } else {
-      Alert.alert("Erro", "Senha incorreta! Tente novamente.");
+  const checkDoorPassword = async () => {
+    try {
+      // Recupera o email do usuário armazenado no AsyncStorage
+      const email = await AsyncStorage.getItem('userEmail');
+      
+      if (!email) {
+        console.log('Email do usuário não encontrado.');
+        return;
+      }
+
+      console.log(doorPassword);
+      console.log(email);
+
+      // Envia a senha para o backend para comparação
+      const response = await axios.post(ENV.API_URL + '/verifydoorpass', {
+        email,
+        doorPassword,
+      });
+
+      console.log('Senha da porta verificada com sucesso:', response.data);
+      
+      handleLock();
+
+    } catch (error) {
+      console.error('Erro ao verificar a senha da porta:', error);
     }
   };
 
@@ -147,7 +168,7 @@ export default function index() {
           style={[styles.statusButton, { marginTop: 20 }]}
         />
 
-        <TouchableOpacity style={styles.unlockButton} onPress={() => verifyPassword(handleLock)}>
+        <TouchableOpacity style={styles.unlockButton} onPress={() => checkDoorPassword()}>
           <Image
             source={doorOpened ? require('@/assets/images/unlocked-icon.png') : require('@/assets/images/locked-icon.png')}
             style={styles.unlockImage}

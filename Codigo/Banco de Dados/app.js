@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { Sequelize } = require('sequelize');
-//const User = require('./models/User'); 
+const User = require('./models/User'); 
 const bcrypt = require('bcrypt');
 
 const app = express();
@@ -70,16 +70,15 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Rota da porta (recuperar senha p/abrir e fechar)
-app.post('/door', async (req, res) => {
-  const { id, doorPassword } = req.body;
+app.post('/verifydoorpass', async (req, res) => {
+  const { email, doorPassword } = req.body;
   
-  if (!id || !doorPassword) {
-    return res.status(400).json({ error: 'ID e senha são obrigatórios.' });
+  if (!email || !doorPassword) {
+    return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
   }
 
   try {
-    const user = await User.findOne({ where: { id } });
+    const user = await User.findOne({ where: { email } });
 
     if (!user) {
       return res.status(401).json({ error: 'Usuário não encontrado.' });
@@ -90,11 +89,11 @@ app.post('/door', async (req, res) => {
       return res.status(401).json({ error: 'Senha incorreta.' });
     }
 
-    res.json({ message: 'Sucesso ao trancar/destrancar porta!', user: { name: user.name, email: user.email } });
+    res.json({ message: 'Senha da porta verificada com sucesso!', user: { name: user.name, email: user.email } });
 
   } catch (error) {
-    console.error('Erro ao realizar operação na porta:', error);
-    res.status(500).json({ error: 'Erro ao realizar operação na porta, tente novamente.' });
+    console.error('Erro ao comparar senha da porta:', error);
+    res.status(500).json({ error: 'Erro ao comparar senha da porta, tente novamente.' });
   }
 });
 

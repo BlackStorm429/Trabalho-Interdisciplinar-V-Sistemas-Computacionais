@@ -7,6 +7,7 @@ import axios from 'axios';
 import { ENV } from '@/config/environment';
 import { Colors } from '@/constants/Colors';
 import { useTheme } from '@/contexts/ThemeContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type SignInScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignInScreen'>;
 
@@ -24,6 +25,11 @@ export default function SignInScreen() {
       });
       
       console.log('Usuário logado com sucesso:', response.data);
+      
+      // Armazena o email do usuário no AsyncStorage
+      const userEmail = response.data.user.email; 
+      await AsyncStorage.setItem('userEmail', userEmail);
+      
       navigation.navigate('index');
 
     } catch (error) {
