@@ -7,17 +7,69 @@ import { RootStackParamList } from '../types';
 import { Colors } from '@/constants/Colors';
 import { useTheme } from '@/contexts/ThemeContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { ENV } from '@/config/environment';
 
 type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SettingsScreen'>;
 
 export default function SettingsScreen() {
   const navigation = useNavigation<SettingsScreenNavigationProp>();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const { darkMode, toggleDarkMode } = useTheme();
 
   const colorScheme = darkMode ? "dark" : "light";
+
+  const updateEmail = async () => {
+    try {
+      const email = await AsyncStorage.getItem('userEmail');
+      if (!email) {
+        alert('Usuário não encontrado.');
+        return;
+      }
+
+      const response = await axios.post(ENV.API_URL + '/alteraremail', {
+        email,
+        newEmail,
+      });
+
+      console.log('E-mail alterado com sucesso:', response.data);
+
+      // Armazena o email do usuário no AsyncStorage
+      const userEmail = response.data.user.email; 
+      await AsyncStorage.setItem('userEmail', userEmail);
+      
+      navigation.navigate('index');
+      
+    } catch (error) {
+      console.error('Erro ao atualizar dados:', error);
+      alert('Erro ao atualizar dados. Tente novamente.');
+    }
+  };
+
+  const updatePassword = async () => {
+    try {
+      const email = await AsyncStorage.getItem('userEmail');
+      if (!email) {
+        alert('Usuário não encontrado.');
+        return;
+      }
+
+      const response = await axios.post(ENV.API_URL + '/alterarsenha', {
+        email,
+        newPassword,
+      });
+
+      console.log('Senha alterada com sucesso:', response.data);
+
+      navigation.navigate('index');
+      
+    } catch (error) {
+      console.error('Erro ao atualizar dados:', error);
+      alert('Erro ao atualizar dados. Tente novamente.');
+    }
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -81,6 +133,15 @@ export default function SettingsScreen() {
       fontSize: 16,
       color: Colors[colorScheme ?? "light"].text,
     },
+    updateButton: {
+      width: '50%',
+      padding: 15,
+      backgroundColor: Colors[colorScheme ?? "light"].buttonBackground,
+      borderRadius: 10,
+      alignItems: 'center',
+      alignSelf: 'center',
+      marginBottom: 40, 
+    },
     logoutButton: {
       width: '80%',
       padding: 15,
@@ -102,6 +163,7 @@ export default function SettingsScreen() {
     try {
       // Remove o email armazenado no AsyncStorage
       await AsyncStorage.removeItem('userEmail');
+      console.log('Usuário deslogado com sucesso');
       
       // Navega para a tela de login após o logout
       navigation.navigate('SignInScreen');
@@ -113,8 +175,8 @@ export default function SettingsScreen() {
   useFocusEffect(
     useCallback(() => {
       // Limpa os campos sempre que a tela for focada
-      setPassword('');
-      setEmail('');
+      setNewPassword('');
+      setNewEmail('');
     }, [])
   );
 
@@ -132,10 +194,14 @@ export default function SettingsScreen() {
           style={styles.input}
           placeholder="E-mail"
           placeholderTextColor={Colors[colorScheme ?? "light"].text}
-          value={email}
-          onChangeText={setEmail}
+          value={newEmail}
+          onChangeText={setNewEmail}
           keyboardType="email-address"
         />
+        {/* Botão de Alterar */}
+        <TouchableOpacity style={styles.updateButton} onPress={updateEmail}>
+          <Text style={ styles.logoutText}>Alterar</Text>
+        </TouchableOpacity>
 
         {/* Campo de Senha */}
         <Text style={styles.sectionTitle}>Alterar Senha</Text>
@@ -143,10 +209,14 @@ export default function SettingsScreen() {
           style={styles.input}
           placeholder="Senha"
           placeholderTextColor={Colors[colorScheme ?? "light"].text}
-          value={password}
-          onChangeText={setPassword}
+          value={newPassword}
+          onChangeText={setNewPassword}
           secureTextEntry
         />
+        {/* Botão de Alterar */}
+        <TouchableOpacity style={styles.updateButton} onPress={updatePassword}>
+          <Text style={ styles.logoutText}>Alterar</Text>
+        </TouchableOpacity>
 
         {/* Preferências de Notificação */}
         <View style={styles.switchContainer}>
