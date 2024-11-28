@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, useColorScheme } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -36,7 +36,14 @@ export default function SignInScreen() {
 
     } catch (error) {
       console.error('Erro ao logar o usuário:', error);
-      alert('Erro ao logar, verifique suas credenciais.');
+      Toast.show({
+        type: 'error',
+        text1: 'Credenciais inválidas',
+        visibilityTime: 2000,
+        position: 'top',
+        autoHide: true,
+        topOffset: 30,
+      });
     }
   };
 
@@ -107,11 +114,11 @@ export default function SignInScreen() {
       text1: 'Verificando credenciais...',
       text2: 'Por favor aguarde',
       position: 'top',
-      autoHide: false,
+      visibilityTime: 5000,
+      autoHide: true,
       topOffset: 30,
       onShow: async () => {
         await handleSignIn();
-        Toast.hide();
       }
     });
   };

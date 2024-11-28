@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { View, Button, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, Alert, Dimensions, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -6,6 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { Colors } from '@/constants/Colors';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useNotification } from '@/contexts/NotificationContext';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ENV } from '@/config/environment';
@@ -18,9 +19,13 @@ export default function index() {
   const AUTH_TOKEN = "TIV_2024/2"; // Token de autenticação
 
   const navigation = useNavigation<NavigationProp>();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null); // Referência para o intervalo
   const [doorPassword, setDoorPassword] = useState('');
   const [doorOpened, setDoorOpened] = useState(false);
+  const [timer, setTimer] = useState(0); // Tempo em segundos
   const { darkMode } = useTheme();
+  const { notification } = useNotification();
+
 
   const doorAction = doorOpened ? 'trancar' : 'destrancar';
 
@@ -139,6 +144,43 @@ export default function index() {
     }, [])
   );
 
+
+  useEffect(() => {
+    // Quando a porta está aberta, inicia o temporizador
+    if (doorOpened) {
+      intervalRef.current = setInterval(() => {
+        setTimer((prev) => prev + 1);
+      }, 1000); // Atualiza a cada segundo
+    } else {
+      // Quando a porta fecha, para e reseta o temporizador
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      setTimer(0);
+    }
+
+    // Limpeza do intervalo quando o componente desmonta
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [doorOpened]);
+
+  
+  useEffect(() => {
+    // Envia o aviso após 10 minutos
+    if (timer >= 60) {
+      const minutes = Math.floor(timer / 60);
+      if (notification) {
+        Toast.show({
+          type: 'info', 
+          text1: `A porta está aberta faz ${minutes} ${minutes > 1 ? 'minutos' : 'minuto'}.`, 
+          text2: 'Recomendo fechá-la.',
+          visibilityTime: 5000,
+          autoHide: true,
+          topOffset: 30,
+        });
+      }
+    }
+  }, [Math.floor(timer / 60)]);
+
   const handleToast = () => {
     Toast.show({
       type: 'success',
@@ -149,7 +191,8 @@ export default function index() {
       autoHide: true,
       topOffset: 30,
       onShow: () => {
-        checkDoorPassword();
+        setDoorOpened(!doorOpened);
+        // checkDoorPassword();
       },
       onHide: () => {
         console.log('Toast hidden');
@@ -183,7 +226,9 @@ export default function index() {
           />
 
           <TouchableOpacity style={styles.unlockButton} onPress={() => {
-            handleToast()
+            notification 
+            ? handleToast()
+            : checkDoorPassword();
           }}>
             <Image
               source={doorOpened ? require('@/assets/images/unlocked-icon.png') : require('@/assets/images/locked-icon.png')}

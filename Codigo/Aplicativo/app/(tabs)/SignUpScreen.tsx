@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, useColorScheme } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Toast from 'react-native-toast-message';
 import { RootStackParamList } from '../types';
 import axios from 'axios';
 import { TextInputCustom } from '@/components/TextInputCustom';
@@ -41,6 +42,18 @@ export default function SignUpScreen() {
       console.log(`Dados: ${name}, ${email}, ${password}, ${confirmPassword}, ${doorPassword}`);
       return;
     }
+
+    setErrorMessage('');
+
+    Toast.show({
+      type: 'info',
+      text1: 'Cadastrando usuário...',
+      text2: 'Por favor aguarde',
+      position: 'top',
+      visibilityTime: 5000,
+      autoHide: true,
+      topOffset: 30
+    })
 
     // Verificação de senhas iguais
     if (password !== confirmPassword) {
@@ -188,6 +201,7 @@ export default function SignUpScreen() {
       <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
         <Text style={styles.signinText}>Já tem conta? Entrar</Text>
       </TouchableOpacity>
+      <Toast />
     </View>
   );
 }

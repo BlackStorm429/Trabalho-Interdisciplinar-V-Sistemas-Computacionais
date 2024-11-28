@@ -6,6 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { Colors } from '@/constants/Colors';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useNotification } from '@/contexts/NotificationContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { ENV } from '@/config/environment';
@@ -16,7 +17,7 @@ export default function SettingsScreen() {
   const navigation = useNavigation<SettingsScreenNavigationProp>();
   const [newEmail, setNewEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const { notification, toggleNotification } = useNotification();
   const { darkMode, toggleDarkMode } = useTheme();
 
   const colorScheme = darkMode ? "dark" : "light";
@@ -222,10 +223,8 @@ export default function SettingsScreen() {
         <View style={styles.switchContainer}>
           <Text style={styles.switchLabel}>Notificações</Text>
           <Switch
-            value={notificationsEnabled}
-            onValueChange={(value) => {
-              setNotificationsEnabled(value)
-            }}
+            value={notification}
+            onValueChange={toggleNotification}
           />
         </View>
 
