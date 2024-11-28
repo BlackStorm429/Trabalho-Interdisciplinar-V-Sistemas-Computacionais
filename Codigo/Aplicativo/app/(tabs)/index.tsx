@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Button, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, Alert, Dimensions, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -80,23 +81,10 @@ export default function index() {
       marginBottom: 40,
       marginTop: 40,
     },
-    bottomNav: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      width: '100%',
-      height: '10%',
-      position: 'absolute',
-      bottom: 30,
-      paddingHorizontal: 50,
-    },
     iconContainer: {
       backgroundColor: Colors[colorScheme ?? "light"].buttonBackground,
       padding: 10,
       borderRadius: 10,
-    },
-    iconImage: {
-      width: 40,
-      height: 40,
     },
   });
 
@@ -120,6 +108,7 @@ export default function index() {
       });
 
       console.log('Senha da porta verificada com sucesso:', response.data);
+      setDoorPassword('');
       
       handleLock();
 
@@ -142,6 +131,13 @@ export default function index() {
       Alert.alert(`Erro ao ${doorAction} a porta`);
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      // Limpa os campos sempre que a tela for focada
+      setDoorPassword('');
+    }, [])
+  );
 
   return (
     <View
@@ -170,7 +166,7 @@ export default function index() {
 
         <TouchableOpacity style={styles.unlockButton} onPress={() => checkDoorPassword()}>
           <Image
-            source={doorOpened ? require('@/assets/images/unlocked-icon.png') : require('@/assets/images/locked-icon.png')}
+            source={doorOpened ? require('@/assets/images/locked-icon.png') : require('@/assets/images/unlocked-icon.png')}
             style={styles.unlockImage}
           />
         </TouchableOpacity>
@@ -184,35 +180,6 @@ export default function index() {
           onChangeText={setDoorPassword}
         />
       </KeyboardAvoidingView>
-      <View style={styles.bottomNav}>
-        <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
-          <View style={styles.iconContainer}>
-            <Image
-              source={require('@/assets/images/settings-icon.png')}
-              style={styles.iconImage}
-            />
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => navigation.navigate('index')}>
-          <View style={styles.iconContainer}>
-            <Image
-              source={require('@/assets/images/home-icon.png')}
-              style={styles.iconImage}
-            />
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => navigation.navigate('AboutScreen')}>
-          <View style={styles.iconContainer}>
-            <Image
-              source={require('@/assets/images/about-icon.png')}
-              style={styles.iconImage}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
-
     </View>
   );
 }

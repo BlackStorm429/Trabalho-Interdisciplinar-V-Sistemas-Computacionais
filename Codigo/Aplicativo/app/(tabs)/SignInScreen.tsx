@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -90,6 +91,14 @@ export default function SignInScreen() {
       color: Colors[colorScheme ?? "light"].text,
     },
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      // Limpa os campos sempre que a tela for focada
+      setEmail('');
+      setPassword('');
+    }, [])
+  );
 
   return (
     <View style={styles.container}>

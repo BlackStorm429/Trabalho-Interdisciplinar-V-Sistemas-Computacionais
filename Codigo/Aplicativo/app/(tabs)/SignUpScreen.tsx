@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -141,6 +142,13 @@ export default function SignUpScreen() {
       marginTop: 10,
     },
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      // Limpa os campos sempre que a tela for focada
+      clearFields();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, TextInput, TouchableOpacity, Switch, StyleSheet, Image, KeyboardAvoidingView, Platform, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
 import { Colors } from '@/constants/Colors';
 import { useTheme } from '@/contexts/ThemeContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SettingsScreen'>;
 
@@ -95,12 +97,29 @@ export default function SettingsScreen() {
     },
   });
 
+  // Função para realizar o logout
+  const handleLogout = async () => {
+    try {
+      // Remove o email armazenado no AsyncStorage
+      await AsyncStorage.removeItem('userEmail');
+      
+      // Navega para a tela de login após o logout
+      navigation.navigate('SignInScreen');
+    } catch (error) {
+      console.error('Erro ao deslogar:', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      // Limpa os campos sempre que a tela for focada
+      setPassword('');
+      setEmail('');
+    }, [])
+  );
+
   return (
     <View style={styles.container}>
-      {/* Header - Botão Voltar */}
-      <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.goBack()}>
-        <Image source={require('@/assets/images/back-icon.png')} style={styles.backIcon} />
-      </TouchableOpacity>
       <KeyboardAvoidingView
         style={styles.keyboardContainer}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -149,7 +168,7 @@ export default function SettingsScreen() {
       </View>
       </KeyboardAvoidingView>
       {/* Botão de Logout */}
-      <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.navigate('SignInScreen')}>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={ styles.logoutText}>Sair</Text>
       </TouchableOpacity>
     </View>

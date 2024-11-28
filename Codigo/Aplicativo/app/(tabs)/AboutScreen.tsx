@@ -85,7 +85,7 @@ export default function AboutScreen() {
   return (
     <View style={styles.container}>
       {/* Header - Botão Voltar com fundo */}
-      <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.goBack()}>
+      <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate('index')}>
         <Image source={require('@/assets/images/back-icon.png')} style={styles.backIcon} />
       </TouchableOpacity>
 
