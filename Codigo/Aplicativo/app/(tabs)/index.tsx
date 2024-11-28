@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, Button, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, Alert, Dimensions, useColorScheme } from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Toast from 'react-native-toast-message';
 import { RootStackParamList } from '../types';
 import { Colors } from '@/constants/Colors';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -19,7 +20,7 @@ export default function index() {
   const [doorPassword, setDoorPassword] = useState('');
   const [doorOpened, setDoorOpened] = useState(false);
   const { darkMode } = useTheme();
-
+  
   const doorAction = doorOpened ? 'trancar' : 'destrancar';
 
   const colorScheme = darkMode ? "dark" : "light";
@@ -143,77 +144,97 @@ export default function index() {
     }
   };
 
+  const handleToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Validando senha...',
+      text2: 'Por favor aguarde',
+      position: 'top',
+      visibilityTime: 1000,
+      autoHide: true,
+      topOffset: 30,
+      onShow: () => {
+        checkDoorPassword();
+      },
+      onHide: () => {
+        console.log('Toast hidden');
+      }
+    });
+  };
+
   return (
-    <View
-    style={styles.container}
-    >
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
-          <View style={styles.iconContainer}>
-            <Image
-              source={require('@/assets/images/user-icon.png')}
-              style={styles.headerImage}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
-    
-      <KeyboardAvoidingView
-        style={styles.keyboardContainer}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+      <View
+      style={styles.container}
       >
-        <Image
-          source={doorOpened ? require('@/assets/images/unlocked-status.png') : require('@/assets/images/locked-status.png')}
-          style={[styles.statusButton, { marginTop: 20 }]}
-        />
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
+            <View style={styles.iconContainer}>
+              <Image
+                source={require('@/assets/images/user-icon.png')}
+                style={styles.headerImage}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity style={styles.unlockButton} onPress={() => checkDoorPassword()}>
+        <KeyboardAvoidingView
+          style={styles.keyboardContainer}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+        >
           <Image
-            source={doorOpened ? require('@/assets/images/unlocked-icon.png') : require('@/assets/images/locked-icon.png')}
-            style={styles.unlockImage}
+            source={doorOpened ? require('@/assets/images/unlocked-status.png') : require('@/assets/images/locked-status.png')}
+            style={[styles.statusButton, { marginTop: 20 }]}
           />
-        </TouchableOpacity>
 
-        <TextInput
-          style={styles.passwordInput}
-          placeholder="Digite a senha da porta"
-          placeholderTextColor={Colors[colorScheme ?? "light"].text}
-          secureTextEntry
-          value={doorPassword}
-          onChangeText={setDoorPassword}
-        />
-      </KeyboardAvoidingView>
-      <View style={styles.bottomNav}>
-        <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
-          <View style={styles.iconContainer}>
+          <TouchableOpacity style={styles.unlockButton} onPress={() => {
+            handleToast()
+          }}>
             <Image
-              source={require('@/assets/images/settings-icon.png')}
-              style={styles.iconImage}
+              source={doorOpened ? require('@/assets/images/unlocked-icon.png') : require('@/assets/images/locked-icon.png')}
+              style={styles.unlockImage}
             />
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('index')}>
-          <View style={styles.iconContainer}>
-            <Image
-              source={require('@/assets/images/home-icon.png')}
-              style={styles.iconImage}
-            />
-          </View>
-        </TouchableOpacity>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Digite a senha da porta"
+            placeholderTextColor={Colors[colorScheme ?? "light"].text}
+            secureTextEntry
+            value={doorPassword}
+            onChangeText={setDoorPassword}
+          />
+        </KeyboardAvoidingView>
+        <View style={styles.bottomNav}>
+          <TouchableOpacity onPress={() => navigation.navigate('SettingsScreen')}>
+            <View style={styles.iconContainer}>
+              <Image
+                source={require('@/assets/images/settings-icon.png')}
+                style={styles.iconImage}
+              />
+            </View>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('AboutScreen')}>
-          <View style={styles.iconContainer}>
-            <Image
-              source={require('@/assets/images/about-icon.png')}
-              style={styles.iconImage}
-            />
-          </View>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('index')}>
+            <View style={styles.iconContainer}>
+              <Image
+                source={require('@/assets/images/home-icon.png')}
+                style={styles.iconImage}
+              />
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate('AboutScreen')}>
+            <View style={styles.iconContainer}>
+              <Image
+                source={require('@/assets/images/about-icon.png')}
+                style={styles.iconImage}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+        <Toast />
       </View>
-
-    </View>
   );
 }
 

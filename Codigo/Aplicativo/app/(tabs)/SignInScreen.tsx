@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, useColorScheme } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Toast from 'react-native-toast-message';
 import { RootStackParamList } from '../types';
 import axios from 'axios';
 import { ENV } from '@/config/environment';
@@ -91,13 +92,28 @@ export default function SignInScreen() {
     },
   });
 
+  const handleSignInToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Verificando credenciais...',
+      text2: 'Por favor aguarde',
+      position: 'top',
+      autoHide: false,
+      topOffset: 30,
+      onShow: async () => {
+        await handleSignIn();
+        Toast.hide();
+      }
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Image source={require('@/assets/images/handle-icon.png')} style={styles.logo} />
       <Text style={styles.appName}>SmartLock</Text>
       <TextInput style={styles.input} placeholder="E-mail" placeholderTextColor={Colors[colorScheme ?? "light"].text} value={email} onChangeText={setEmail} keyboardType="email-address" />
       <TextInput style={styles.input} placeholder="Senha" placeholderTextColor={Colors[colorScheme ?? "light"].text} value={password} onChangeText={setPassword} secureTextEntry />
-      <TouchableOpacity style={styles.loginButton} onPress={handleSignIn}>
+      <TouchableOpacity style={styles.loginButton} onPress={handleSignInToast}>
         <Text style={styles.loginText}>Entrar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
@@ -106,6 +122,7 @@ export default function SignInScreen() {
       <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
         <Text style={styles.signupText}>Não tem conta? Cadastre-se!</Text>
       </TouchableOpacity>
+      <Toast />
     </View>
   );
 }

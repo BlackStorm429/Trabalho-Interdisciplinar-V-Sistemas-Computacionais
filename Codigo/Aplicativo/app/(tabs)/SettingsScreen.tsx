@@ -134,7 +134,9 @@ export default function SettingsScreen() {
           <Text style={styles.switchLabel}>Notificações</Text>
           <Switch
             value={notificationsEnabled}
-            onValueChange={(value) => setNotificationsEnabled(value)}
+            onValueChange={(value) => {
+              setNotificationsEnabled(value)
+            }}
           />
         </View>
 
