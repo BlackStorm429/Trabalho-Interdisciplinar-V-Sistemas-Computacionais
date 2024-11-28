@@ -9,6 +9,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ENV } from '@/config/environment';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
 
@@ -20,6 +22,13 @@ export default function index() {
   const [doorPassword, setDoorPassword] = useState('');
   const [doorOpened, setDoorOpened] = useState(false);
   const { darkMode } = useTheme();
+
+  const showToast = (message: string) => {
+    Toast.show({ 
+      type: 'info', 
+      text1: message 
+    });
+  };
 
   const doorAction = doorOpened ? 'trancar' : 'destrancar';
 
@@ -124,7 +133,6 @@ export default function index() {
         params: { token: AUTH_TOKEN },
       });
       console.log(response.data);
-      Alert.alert(response.data);
       setDoorOpened(!doorOpened);
     } catch (error) {
       console.log(error);
@@ -153,7 +161,9 @@ export default function index() {
           </View>
         </TouchableOpacity>
       </View>
-    
+
+      <Toast />
+
       <KeyboardAvoidingView
         style={styles.keyboardContainer}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -164,7 +174,11 @@ export default function index() {
           style={[styles.statusButton, { marginTop: 20 }]}
         />
 
-        <TouchableOpacity style={styles.unlockButton} onPress={() => checkDoorPassword()}>
+        <TouchableOpacity style={styles.unlockButton} 
+        onPress={() => { 
+          checkDoorPassword(); 
+          showToast("Verificando senha da porta...") 
+        }}>
           <Image
             source={doorOpened ? require('@/assets/images/locked-icon.png') : require('@/assets/images/unlocked-icon.png')}
             style={styles.unlockImage}
