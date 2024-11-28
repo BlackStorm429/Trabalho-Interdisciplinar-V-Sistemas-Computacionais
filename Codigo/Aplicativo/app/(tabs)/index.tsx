@@ -9,7 +9,6 @@ import { useTheme } from '@/contexts/ThemeContext';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ENV } from '@/config/environment';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
@@ -22,13 +21,6 @@ export default function index() {
   const [doorPassword, setDoorPassword] = useState('');
   const [doorOpened, setDoorOpened] = useState(false);
   const { darkMode } = useTheme();
-
-  const showToast = (message: string) => {
-    Toast.show({ 
-      type: 'info', 
-      text1: message 
-    });
-  };
 
   const doorAction = doorOpened ? 'trancar' : 'destrancar';
 
@@ -147,54 +139,68 @@ export default function index() {
     }, [])
   );
 
+  const handleToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Validando senha...',
+      text2: 'Por favor aguarde',
+      position: 'top',
+      visibilityTime: 1000,
+      autoHide: true,
+      topOffset: 30,
+      onShow: () => {
+        checkDoorPassword();
+      },
+      onHide: () => {
+        console.log('Toast hidden');
+      }
+    });
+  };
+
   return (
-    <View
-    style={styles.container}
-    >
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
-          <View style={styles.iconContainer}>
-            <Image
-              source={require('@/assets/images/user-icon.png')}
-              style={styles.headerImage}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
-
-      <Toast />
-
-      <KeyboardAvoidingView
-        style={styles.keyboardContainer}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+      <View
+      style={styles.container}
       >
-        <Image
-          source={doorOpened ? require('@/assets/images/unlocked-status.png') : require('@/assets/images/locked-status.png')}
-          style={[styles.statusButton, { marginTop: 20 }]}
-        />
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
+            <View style={styles.iconContainer}>
+              <Image
+                source={require('@/assets/images/user-icon.png')}
+                style={styles.headerImage}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity style={styles.unlockButton} 
-        onPress={() => { 
-          checkDoorPassword(); 
-          showToast("Verificando senha da porta...") 
-        }}>
+        <KeyboardAvoidingView
+          style={styles.keyboardContainer}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+        >
           <Image
-            source={doorOpened ? require('@/assets/images/locked-icon.png') : require('@/assets/images/unlocked-icon.png')}
-            style={styles.unlockImage}
+            source={doorOpened ? require('@/assets/images/unlocked-status.png') : require('@/assets/images/locked-status.png')}
+            style={[styles.statusButton, { marginTop: 20 }]}
           />
-        </TouchableOpacity>
 
-        <TextInput
-          style={styles.passwordInput}
-          placeholder="Digite a senha da porta"
-          placeholderTextColor={Colors[colorScheme ?? "light"].text}
-          secureTextEntry
-          value={doorPassword}
-          onChangeText={setDoorPassword}
-        />
-      </KeyboardAvoidingView>
-    </View>
+          <TouchableOpacity style={styles.unlockButton} onPress={() => {
+            handleToast()
+          }}>
+            <Image
+              source={doorOpened ? require('@/assets/images/unlocked-icon.png') : require('@/assets/images/locked-icon.png')}
+              style={styles.unlockImage}
+            />
+          </TouchableOpacity>
+
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Digite a senha da porta"
+            placeholderTextColor={Colors[colorScheme ?? "light"].text}
+            secureTextEntry
+            value={doorPassword}
+            onChangeText={setDoorPassword}
+          />
+        </KeyboardAvoidingView>
+        <Toast />
+      </View>
   );
 }
-
