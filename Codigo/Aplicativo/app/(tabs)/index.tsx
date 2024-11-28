@@ -119,7 +119,7 @@ export default function index() {
       handleLock();
 
     } catch (error) {
-      console.error('Erro ao verificar a senha da porta:', error);
+    //  console.error('Erro ao verificar a senha da porta:', error);
     }
   };
 
@@ -231,7 +231,7 @@ export default function index() {
             : checkDoorPassword();
           }}>
             <Image
-              source={doorOpened ? require('@/assets/images/unlocked-icon.png') : require('@/assets/images/locked-icon.png')}
+              source={doorOpened ? require('@/assets/images/locked-icon.png') : require('@/assets/images/unlocked-icon.png')}
               style={styles.unlockImage}
             />
           </TouchableOpacity>
@@ -243,6 +243,7 @@ export default function index() {
             secureTextEntry
             value={doorPassword}
             onChangeText={setDoorPassword}
+            keyboardType="number-pad"
           />
         </KeyboardAvoidingView>
         <Toast />

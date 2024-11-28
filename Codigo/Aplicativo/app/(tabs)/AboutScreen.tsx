@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, useColorScheme } from 'react-native';
+import React from 'react';
+import { ScrollView, View, Text, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
@@ -16,27 +16,15 @@ export default function AboutScreen() {
 
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
+      flexGrow: 1, // Permite o scroll baseado no conteúdo
       padding: 20,
       backgroundColor: Colors[colorScheme ?? "light"].background,
-    },
-    iconContainer: {
-      backgroundColor: Colors[colorScheme ?? "light"].buttonBackground, 
-      padding: 10,
-      borderRadius: 10,
-      position: 'absolute',
-      top: 40,
-      left: 20,
-    },
-    backIcon: {
-      width: 30,
-      height: 30,
     },
     logo: {
       width: 100,
       height: 100,
       alignSelf: 'center',
-      marginTop: 100,
+      marginTop: 50,
       marginVertical: 20,
     },
     title: {
@@ -58,7 +46,7 @@ export default function AboutScreen() {
       marginBottom: 10,
     },
     developerContainer: {
-      flexDirection: 'column',
+      marginBottom: 20,
     },
     developerItem: {
       flexDirection: 'row',
@@ -83,7 +71,7 @@ export default function AboutScreen() {
   });
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {/* Logo e Título do Projeto */}
       <Image source={require('@/assets/images/handle-icon.png')} style={styles.logo} />
       <Text style={styles.title}>SmartLock</Text>
@@ -140,6 +128,6 @@ export default function AboutScreen() {
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
